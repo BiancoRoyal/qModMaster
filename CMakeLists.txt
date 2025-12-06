@@ -93,12 +93,8 @@ include_directories(
 # Platform-specific settings
 if(WIN32)
     add_definitions(-D_TTY_WIN_ -DWINVER=0x0501)
-    target_link_libraries(${PROJECT_NAME} setupapi wsock32 ws2_32)
 elseif(APPLE)
     add_definitions(-D_TTY_POSIX_)
-    find_library(DISKARBITRATION_LIB DiskArbitration)
-    find_library(IOKIT_LIB IOKit)
-    target_link_libraries(${PROJECT_NAME} ${DISKARBITRATION_LIB} ${IOKIT_LIB})
 elseif(UNIX)
     add_definitions(-D_TTY_POSIX_)
 endif()
@@ -114,6 +110,17 @@ target_link_libraries(${PROJECT_NAME}
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::SerialPort
 )
+
+# Platform-specific libraries (must be after target_link_libraries)
+if(WIN32)
+    # Windows libraries already linked above
+elseif(APPLE)
+    find_library(DISKARBITRATION_LIB DiskArbitration)
+    find_library(IOKIT_LIB IOKit)
+    if(DISKARBITRATION_LIB AND IOKIT_LIB)
+        target_link_libraries(${PROJECT_NAME} ${DISKARBITRATION_LIB} ${IOKIT_LIB})
+    endif()
+endif()
 
 # Build directory
 set_target_properties(${PROJECT_NAME} PROPERTIES

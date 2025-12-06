@@ -36,8 +36,13 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     }
     else if (m_base == 10) {//Dec
             QLineEdit *editor = new QLineEdit(parent);
+            #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            QRegularExpression rx("-?[0-9]{1,5}");
+            QValidator *validator = new QRegularExpressionValidator(rx);
+            #else
             QRegExp rx("-{0,1}[0-9]{1,5}");
             QValidator *validator = new QRegExpValidator(rx);
+            #endif
             editor->setValidator(validator);
             return editor;
     }
@@ -48,8 +53,13 @@ QWidget *RegistersDataDelegate::createEditor(QWidget *parent,
     }
     else {//Default = Dec
             QLineEdit *editor = new QLineEdit(parent);
+            #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            QRegularExpression rx("-?[0-9]{1,5}");
+            QValidator *validator = new QRegularExpressionValidator(rx);
+            #else
             QRegExp rx("-{0,1}[0-9]{1,5}");
             QValidator *validator = new QRegExpValidator(rx);
+            #endif
             editor->setValidator(validator);
             return editor;
     }
