@@ -3,8 +3,6 @@
 #include "modbus-version.h"
 #include <QApplication>
 #include <QSysInfo>
-#include <QTextDocument>
-#include <QDateTime>
 #include <QtGlobal>
 
 const QString VER = "qModMaster 0.6.0";

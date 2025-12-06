@@ -20,7 +20,6 @@ BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
 {
     ui->setupUi(this);
     ui->lstRawData->setModel(m_rawDataModel->model);
-    //TODO : Delegate
     //ui->lstRawData->setItemDelegate(new RawDataDelegate());
     //Setup Toolbar
     ui->toolBar->addAction(ui->actionSave);
@@ -71,7 +70,6 @@ void BusMonitor::save()
 void BusMonitor::clear()
 {
 
-    //qDebug()<<  "BusMonitor : clear" ;
 
     m_rawDataModel->clear();
     ui->txtPDU->clear();
@@ -81,7 +79,6 @@ void BusMonitor::clear()
 void BusMonitor::exit()
 {
 
-   //qDebug()<<  "BusMonitor : exit" ;
 
    this->close();
 

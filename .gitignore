@@ -34,35 +34,35 @@ Makefile*
 *.prl
 *.pri.user
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Compiled Object files (already covered above)
+# *.slo
+# *.lo
+# *.o
+# *.obj
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Compiled Dynamic libraries (already covered above)
+# *.so
+# *.dylib
+# *.dll
 
 # Fortran module files
 *.mod
 *.smod
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Compiled Static libraries (already covered above)
+# *.lai
+# *.la
+# *.a
+# *.lib
 
-# Executables
-*.exe
-*.out
-*.app
+# Executables (already covered above)
+# *.exe
+# *.out
+# *.app
 
 # Debug files
 *.dSYM/
