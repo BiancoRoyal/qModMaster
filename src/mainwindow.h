@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0, ModbusAdapter *adapter = 0, ModbusCommSettings *settings = 0);
+    explicit MainWindow(QWidget *parent = nullptr, ModbusAdapter *adapter = nullptr, ModbusCommSettings *settings = nullptr);
     ~MainWindow();
     void showUpInfoBar(QString message, InfoBar::InfoType type);
     void hideInfoBar();

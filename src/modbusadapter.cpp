@@ -10,11 +10,11 @@ ModbusAdapter *m_instance;
 
 ModbusAdapter::ModbusAdapter(QObject *parent) :
     QObject(parent),
-    m_modbus(NULL)
+    m_modbus(nullptr)
 {
     m_instance = this;
-    regModel=new RegistersModel(this);
-    rawModel=new RawDataModel(this);
+    regModel = new RegistersModel(this);
+    rawModel = new RawDataModel(this);
     m_connected = false;
     m_ModBusMode = EUtils::None;
     m_pollTimer = new QTimer(this);
@@ -24,17 +24,35 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_errors = 0;
     connect(m_pollTimer, &QTimer::timeout, this, &ModbusAdapter::modbusTransaction);
     connect(regModel, &RegistersModel::refreshView, this, &ModbusAdapter::refreshView);
-    //setup memory for data
-    dest = (uint8_t *) malloc(2000 * sizeof(uint8_t));
+    
+    // Setup memory for data with error checking
+    dest = static_cast<uint8_t*>(malloc(2000 * sizeof(uint8_t)));
+    if (!dest) {
+        QLOG_FATAL() << "Failed to allocate memory for dest buffer";
+        return;
+    }
     memset(dest, 0, 2000 * sizeof(uint8_t));
-    dest16 = (uint16_t *) malloc(125 * sizeof(uint16_t));
+    
+    dest16 = static_cast<uint16_t*>(malloc(125 * sizeof(uint16_t)));
+    if (!dest16) {
+        QLOG_FATAL() << "Failed to allocate memory for dest16 buffer";
+        free(dest);
+        dest = nullptr;
+        return;
+    }
     memset(dest16, 0, 125 * sizeof(uint16_t));
 }
 
 ModbusAdapter::~ModbusAdapter()
 {
-    free(dest);
-    free(dest16);
+    if (dest) {
+        free(dest);
+        dest = nullptr;
+    }
+    if (dest16) {
+        free(dest16);
+        dest16 = nullptr;
+    }
 }
 
 void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int dataBits, int stopBits, int RTS, int timeOut)
@@ -56,7 +74,7 @@ void ModbusAdapter::modbusConnectRTU(QString port, int baud, QChar parity, int d
 
     m_timeOut = timeOut;
 
-    if(m_modbus == NULL){
+    if(m_modbus == nullptr){
         mainWin->showUpInfoBar(tr("Unable to create the libmodbus context."), InfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Unable to create the libmodbus context";
         return;
@@ -123,7 +141,7 @@ void ModbusAdapter::modbusConnectTCP(QString ip, int port, int timeOut)
 
     m_timeOut = timeOut;
 
-    if(m_modbus == NULL){
+    if(m_modbus == nullptr){
         mainWin->showUpInfoBar(tr("Unable to create the libmodbus context."), InfoBar::Error);
         QLOG_ERROR()<<  "Connection failed. Unable to create the libmodbus context";
         return;
@@ -166,7 +184,7 @@ void ModbusAdapter::modbusDisConnect()
             modbus_close(m_modbus);
             modbus_free(m_modbus);
         }
-        m_modbus = NULL;
+        m_modbus = nullptr;
     }
 
     m_connected = false;
@@ -221,7 +239,7 @@ void ModbusAdapter::modbusReadData(int slave, int functionCode, int startAddress
 
     QLOG_INFO() <<  "Modbus Read Data ";
 
-    if(m_modbus == NULL) return;
+    if(m_modbus == nullptr) return;
 
     int ret = -1; //return value from read functions
     bool is16Bit = false;
@@ -295,7 +313,7 @@ void ModbusAdapter::modbusWriteData(int slave, int functionCode, int startAddres
 
     QLOG_INFO() <<  "Modbus Write Data ";
 
-    if(m_modbus == NULL) return;
+    if(m_modbus == nullptr) return;
 
     int ret = -1; //return value from functions
 

@@ -8,7 +8,7 @@
 #include "modbusadapter.h"
 #include "modbuscommsettings.h"
 
-QTranslator *Translator;
+// Translator is now managed by QApplication (removed global variable)
 
 //Logging Levels
 //TraceLevel : 0
@@ -33,9 +33,10 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     #endif
     
-    Translator = new QTranslator;
-    Translator->load(":/translations/" + QCoreApplication::applicationName() + "_" + QLocale::system().name());
-    app.installTranslator(Translator);
+    // Translator will be owned by QApplication and cleaned up automatically
+    QTranslator *translator = new QTranslator(&app);
+    translator->load(":/translations/" + QCoreApplication::applicationName() + "_" + QLocale::system().name());
+    app.installTranslator(translator);
 
     //init the logging mechanism
     QsLogging::Logger& logger = QsLogging::Logger::instance();
@@ -47,12 +48,12 @@ int main(int argc, char *argv[])
     logger.addDestination(fileDestination);
 
     //Modbus Adapter
-    ModbusAdapter modbus_adapt(NULL);
+    ModbusAdapter modbus_adapt(nullptr);
     //Program settings
     ModbusCommSettings settings("qModMaster.ini");
 
     //show main window
-    mainWin = new MainWindow(NULL, &modbus_adapt, &settings);
+    mainWin = new MainWindow(nullptr, &modbus_adapt, &settings);
     //connect signals - slots (Qt 6 compatible functional syntax)
     QObject::connect(&modbus_adapt, &ModbusAdapter::refreshView, mainWin, &MainWindow::refreshView);
     QObject::connect(mainWin, &MainWindow::resetCounters, &modbus_adapt, &ModbusAdapter::resetCounters);

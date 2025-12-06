@@ -16,8 +16,8 @@ class InfoBar : public QFrame
             Error
         };
 
-        InfoBar(QWidget *parent = 0);
-        InfoBar(QString message, InfoType type, QWidget *parent = 0);
+        InfoBar(QWidget *parent = nullptr);
+        InfoBar(QString message, InfoType type, QWidget *parent = nullptr);
         void setInfoType(InfoType type);
         void setMessage(QString message);
         void show(QString message, InfoType type);

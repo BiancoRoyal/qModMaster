@@ -7,8 +7,8 @@ class ModbusCommSettings : public QSettings
 {
     Q_OBJECT
 public:
-    explicit ModbusCommSettings(QObject *parent = 0)  : QSettings(parent) { }
-    ModbusCommSettings(const QString &fileName, Format format = QSettings::IniFormat, QObject *parent = 0);
+    explicit ModbusCommSettings(QObject *parent = nullptr) : QSettings(parent) { }
+    ModbusCommSettings(const QString &fileName, Format format = QSettings::IniFormat, QObject *parent = nullptr);
     //TCP
     QString TCPPort();
     void setTCPPort(QString tcpPort);

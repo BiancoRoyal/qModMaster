@@ -12,7 +12,7 @@ class ModbusAdapter : public QObject
 {
     Q_OBJECT
 public:
-     explicit ModbusAdapter(QObject *parent = 0);
+     explicit ModbusAdapter(QObject *parent = nullptr);
      ~ModbusAdapter();
      void busMonitorRequestData(uint8_t * data,int dataLen);
      void busMonitorResponseData(uint8_t * data,int dataLen);

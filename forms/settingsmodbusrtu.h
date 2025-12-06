@@ -15,7 +15,7 @@ class SettingsModbusRTU : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsModbusRTU(QWidget *parent = 0 ,ModbusCommSettings * settings = 0);
+    explicit SettingsModbusRTU(QWidget *parent = nullptr, ModbusCommSettings *settings = nullptr);
     ~SettingsModbusRTU();
     bool modbus_connected;
 

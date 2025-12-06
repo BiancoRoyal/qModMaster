@@ -13,7 +13,7 @@ class RegistersModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit RegistersModel(QObject *parent = 0);
+    explicit RegistersModel(QObject *parent = nullptr);
 
     void addItems(int startAddress, int noOfItems, bool valueIsEditable);
     void setValue(int idx, int value);

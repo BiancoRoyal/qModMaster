@@ -8,7 +8,7 @@ class RawDataDelegate : public QStyledItemDelegate
      Q_OBJECT
 
  public:
-     RawDataDelegate(QWidget *parent = 0) : QStyledItemDelegate(parent) {}
+     RawDataDelegate(QWidget *parent = nullptr) : QStyledItemDelegate(parent) {}
 
      void paint(QPainter *painter, const QStyleOptionViewItem &option,
                 const QModelIndex &index) const;

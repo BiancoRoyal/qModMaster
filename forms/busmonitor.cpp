@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QShowEvent>
+#include <QtGlobal>  // For qMin
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QRegularExpression>
 #else
@@ -127,6 +128,11 @@ void BusMonitor::parseTxMsg(QString msg)
     #else
     QStringList row = msg.split(QRegExp("\\s+"));
     #endif
+        // Bounds checking for safe array access
+        if (row.length() < 3) {
+            ui->txtPDU->appendPlainText("Error! Invalid message format");
+            return;
+        }
         ui->txtPDU->appendPlainText("Timestamp : " + row[2]);
         if (msg.indexOf("RTU") > -1){//RTU message
             QStringList pdu;
@@ -137,16 +143,22 @@ void BusMonitor::parseTxMsg(QString msg)
             for (int i = 4; i < row.length() - 1 ; i++)
                 pdu.append(row[i]);
             parseTxPDU(pdu, "Slave Addr : ");
-            ui->txtPDU->appendPlainText("CRC : " + pdu[pdu.length() - 2] + pdu[pdu.length() - 1]);
+            // Bounds checking for safe array access
+            if (pdu.length() >= 2) {
+                ui->txtPDU->appendPlainText("CRC : " + pdu[pdu.length() - 2] + pdu[pdu.length() - 1]);
+            }
         }
         else if (msg.indexOf("TCP") > -1){//TCP message
             if (row.length() < 11){//check message length
                 ui->txtPDU->appendPlainText("Error! Cannot parse Message");
                 return;
             }
-            ui->txtPDU->appendPlainText("Transaction ID : " + row[4] + row[5]);
-            ui->txtPDU->appendPlainText("Protocol ID : " + row[6] + row[7]);
-            ui->txtPDU->appendPlainText("Length : " + row[8] + row[9]);
+            // Bounds checking for safe array access
+            if (row.length() >= 10) {
+                ui->txtPDU->appendPlainText("Transaction ID : " + row[4] + row[5]);
+                ui->txtPDU->appendPlainText("Protocol ID : " + row[6] + row[7]);
+                ui->txtPDU->appendPlainText("Length : " + row[8] + row[9]);
+            }
             QStringList pdu;
             for (int i = 10; i < row.length() - 1 ; i++)
                 pdu.append(row[i]);
@@ -161,14 +173,20 @@ void BusMonitor::parseTxPDU(QStringList pdu, QString slave)
 {
 
     if (pdu.length() < 6){//check message length
-        ui->txtPDU->appendPlainText(slave + pdu[0]);
-        ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
-        //ui->txtPDU->appendPlainText("Error! Cannot parse Message");
+        if (pdu.length() >= 2) {
+            ui->txtPDU->appendPlainText(slave + pdu[0]);
+            ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
+        } else {
+            ui->txtPDU->appendPlainText("Error! Cannot parse Message - insufficient data");
+        }
         return;
     }
-    ui->txtPDU->appendPlainText(slave + pdu[0]);
-    ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
-    ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
+    // Safe array access with bounds checking
+    if (pdu.length() >= 4) {
+        ui->txtPDU->appendPlainText(slave + pdu[0]);
+        ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
+        ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
+    }
     bool ok;
     int fcode = pdu[1].toInt(&ok,16);
     if (fcode == 1 || fcode == 2 || fcode == 3 || fcode == 4){//read
@@ -183,12 +201,16 @@ void BusMonitor::parseTxPDU(QStringList pdu, QString slave)
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText("Byte Count : " + pdu[6]);
-        int byteCount = pdu[6].toInt(&ok,16);
-        QString outputValues = "";
-        for (int i = 7; i < 7 + byteCount; i++)
-            outputValues += pdu[i] + " ";
-        ui->txtPDU->appendPlainText("Output Values : " + outputValues);
+        if (pdu.length() > 6) {
+            ui->txtPDU->appendPlainText("Byte Count : " + pdu[6]);
+            int byteCount = pdu[6].toInt(&ok,16);
+            QString outputValues = "";
+            // Bounds checking for safe array access
+            int maxIndex = qMin(7 + byteCount, pdu.length());
+            for (int i = 7; i < maxIndex; i++)
+                outputValues += pdu[i] + " ";
+            ui->txtPDU->appendPlainText("Output Values : " + outputValues);
+        }
     }
 
 }
@@ -212,16 +234,22 @@ void BusMonitor::parseRxMsg(QString msg)
         for (int i = 4; i < row.length() - 1 ; i++)
             pdu.append(row[i]);
         parseRxPDU(pdu, "Slave Addr : ");
-        ui->txtPDU->appendPlainText("CRC : " + pdu[pdu.length() - 2] + pdu[pdu.length() - 1]);
+        // Bounds checking for safe array access
+        if (pdu.length() >= 2) {
+            ui->txtPDU->appendPlainText("CRC : " + pdu[pdu.length() - 2] + pdu[pdu.length() - 1]);
+        }
     }
     else if (msg.indexOf("TCP") > -1){//TCP message
         if (row.length() < 11){//check message length
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText("Transaction ID : " + row[4] + row[5]);
-        ui->txtPDU->appendPlainText("Protocol ID : " + row[6] + row[7]);
-        ui->txtPDU->appendPlainText("Length : " + row[8] + row[9]);
+        // Bounds checking for safe array access
+        if (row.length() >= 10) {
+            ui->txtPDU->appendPlainText("Transaction ID : " + row[4] + row[5]);
+            ui->txtPDU->appendPlainText("Protocol ID : " + row[6] + row[7]);
+            ui->txtPDU->appendPlainText("Length : " + row[8] + row[9]);
+        }
         QStringList pdu;
         for (int i = 10; i < row.length() - 1 ; i++)
             pdu.append(row[i]);
@@ -244,41 +272,51 @@ void BusMonitor::parseRxPDU(QStringList pdu, QString slave)
         }
         ui->txtPDU->appendPlainText(slave + pdu[0]);
         ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
-        ui->txtPDU->appendPlainText("Byte Count : " + pdu[2]);
-        int byteCount = pdu[2].toInt(&ok,16);
-        QString inputValues = "";
-        for (int i = 3; i < 3 + byteCount; i++)
-            inputValues += pdu[i] + " ";
-        ui->txtPDU->appendPlainText("Register Values : " + inputValues);
+        if (pdu.length() > 2) {
+            ui->txtPDU->appendPlainText("Byte Count : " + pdu[2]);
+            int byteCount = pdu[2].toInt(&ok,16);
+            QString inputValues = "";
+            // Bounds checking for safe array access
+            int maxIndex = qMin(3 + byteCount, pdu.length());
+            for (int i = 3; i < maxIndex; i++)
+                inputValues += pdu[i] + " ";
+            ui->txtPDU->appendPlainText("Register Values : " + inputValues);
+        }
     }
     else if (fcode == 5 || fcode == 6){//write
         if (pdu.length() < 6){//check message length
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText(slave + pdu[0]);
-        ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
-        ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
-        ui->txtPDU->appendPlainText("Output Value : " + pdu[4] + pdu[5]);
+        if (pdu.length() >= 6) {
+            ui->txtPDU->appendPlainText(slave + pdu[0]);
+            ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
+            ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
+            ui->txtPDU->appendPlainText("Output Value : " + pdu[4] + pdu[5]);
+        }
     }
     else if (fcode == 15 || fcode == 16){//write multiple
         if (pdu.length() < 6){//check message length
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText(slave + pdu[0]);
-        ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
-        ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
-        ui->txtPDU->appendPlainText("Quantity of Registers : " + pdu[4] + pdu[5]);
+        if (pdu.length() >= 6) {
+            ui->txtPDU->appendPlainText(slave + pdu[0]);
+            ui->txtPDU->appendPlainText("Function Code : " + pdu[1]);
+            ui->txtPDU->appendPlainText("Starting Address : " + pdu[2] + pdu[3]);
+            ui->txtPDU->appendPlainText("Quantity of Registers : " + pdu[4] + pdu[5]);
+        }
     }
     else if (fcode > 0x80){//exception
         if (pdu.length() < 3){//check message length
             ui->txtPDU->appendPlainText("Error! Cannot parse Message");
             return;
         }
-        ui->txtPDU->appendPlainText(slave + pdu[0]);
-        ui->txtPDU->appendPlainText("Function Code [80 + Rx Function Code] : " + pdu[1]);
-        ui->txtPDU->appendPlainText("Exception Code : " + pdu[2]);
+        if (pdu.length() >= 3) {
+            ui->txtPDU->appendPlainText(slave + pdu[0]);
+            ui->txtPDU->appendPlainText("Function Code [80 + Rx Function Code] : " + pdu[1]);
+            ui->txtPDU->appendPlainText("Exception Code : " + pdu[2]);
+        }
     }
 
 }
@@ -292,6 +330,12 @@ void BusMonitor::parseSysMsg(QString msg)
     #else
     QStringList row = msg.split(QRegExp("\\s+"));
     #endif
-    ui->txtPDU->appendPlainText("Timestamp : " + row[2]);
-    ui->txtPDU->appendPlainText("Message" + msg.mid(msg.indexOf(" : ")));
+    // Bounds checking for safe array access
+    if (row.length() >= 3) {
+        ui->txtPDU->appendPlainText("Timestamp : " + row[2]);
+    }
+    int msgIndex = msg.indexOf(" : ");
+    if (msgIndex >= 0) {
+        ui->txtPDU->appendPlainText("Message" + msg.mid(msgIndex));
+    }
 }

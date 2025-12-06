@@ -14,7 +14,7 @@ class RegistersDataDelegate : public QStyledItemDelegate
     bool m_isSigned;
 
  public:
-     RegistersDataDelegate(QWidget *parent = 0) : QStyledItemDelegate(parent) { }
+     RegistersDataDelegate(QWidget *parent = nullptr) : QStyledItemDelegate(parent) { }
 
      void paint(QPainter *painter, const QStyleOptionViewItem &option,
                 const QModelIndex &index) const;

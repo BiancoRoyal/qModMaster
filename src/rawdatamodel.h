@@ -8,7 +8,7 @@ class RawDataModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit RawDataModel(QObject *parent = 0);
+    explicit RawDataModel(QObject *parent = nullptr);
 
     QStringListModel *model;
     void addLine(QString line);

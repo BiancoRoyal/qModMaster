@@ -18,7 +18,7 @@ class Tools : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Tools(QWidget *parent = 0, ModbusAdapter *adapter = 0, ModbusCommSettings *settings = 0);
+    explicit Tools(QWidget *parent = nullptr, ModbusAdapter *adapter = nullptr, ModbusCommSettings *settings = nullptr);
     ~Tools();
 
 private:

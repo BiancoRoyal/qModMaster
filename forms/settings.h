@@ -15,7 +15,7 @@ class Settings : public QDialog
     Q_OBJECT
 
 public:
-    explicit Settings(QWidget *parent = 0 ,ModbusCommSettings * settings = 0);
+    explicit Settings(QWidget *parent = nullptr, ModbusCommSettings *settings = nullptr);
     ~Settings();
     bool modbus_connected;
 
