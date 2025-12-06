@@ -21,11 +21,11 @@ BusMonitor::BusMonitor(QWidget *parent, RawDataModel *rawDataModel) :
     ui->toolBar->addAction(ui->actionSave);
     ui->toolBar->addAction(ui->actionClear);
     ui->toolBar->addAction(ui->actionExit);
-    connect(ui->actionSave,SIGNAL(triggered()),this,SLOT(save()));
-    connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clear()));
-    connect(ui->actionExit,SIGNAL(triggered()),this,SLOT(exit()));
-    connect(ui->lstRawData,SIGNAL(activated(QModelIndex)),this,SLOT(selectedRow(QModelIndex)));
-    connect(ui->lstRawData,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedRow(QModelIndex)));
+    connect(ui->actionSave, &QAction::triggered, this, &BusMonitor::save);
+    connect(ui->actionClear, &QAction::triggered, this, &BusMonitor::clear);
+    connect(ui->actionExit, &QAction::triggered, this, &BusMonitor::exit);
+    connect(ui->lstRawData, &QListView::activated, this, &BusMonitor::selectedRow);
+    connect(ui->lstRawData, &QListView::clicked, this, &BusMonitor::selectedRow);
 
 }
 
@@ -56,7 +56,7 @@ void BusMonitor::save()
 
     //iterate
     for (int i = 0; i < sl.size(); ++i)
-              ts << sl.at(i) << endl;
+              ts << sl.at(i) << Qt::endl;
 
     //Close File
     file.close();

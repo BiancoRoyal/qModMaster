@@ -78,17 +78,18 @@ Die Start-Skripte erkennen automatisch Ihre Qt-Installation und starten die Anwe
 
 ## 🛠️ Technologie-Stack
 
-- **Framework**: Qt 5.2.1+
+- **Framework**: Qt 6.0+ (Qt 5.14+ unterstützt)
 - **Modbus-Bibliothek**: libmodbus 3.1.0-1
 - **Logging**: QsLog
-- **Build-System**: qmake
-- **Sprache**: C++11
+- **Build-System**: qmake oder CMake
+- **Sprache**: C++17 (Qt 6) / C++11 (Qt 5)
 
 ## 📦 Abhängigkeiten
 
-- Qt 5.2.1 oder höher (core, gui, network, widgets)
+- Qt 6.0+ oder Qt 5.14+ (core, gui, network, widgets, serialport)
 - libmodbus 3.1.0-1 (im Projekt enthalten)
 - QsLog (im Projekt enthalten)
+- CMake 3.16+ (optional, für CMake-Build)
 
 ## 🔨 Kompilierung
 
@@ -107,11 +108,22 @@ make
 
 ### Windows
 ```cmd
+# Mit qmake
 qmake qModMaster.pro
 nmake
+
+# Mit CMake (empfohlen)
+mkdir build
+cd build
+cmake ..
+cmake --build .
 ```
 
 Siehe [Entwicklerhandbuch](docs/DEVELOPER_GUIDE.md) für detaillierte Anweisungen.
+
+### Qt 6 Upgrade
+
+Das Projekt wurde auf Qt 6 aktualisiert. Siehe [Qt 6 Upgrade Zusammenfassung](docs/QT6_UPGRADE_SUMMARY.md) für Details.
 
 ## 📝 Lizenz
 

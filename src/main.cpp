@@ -24,7 +24,12 @@ QTranslator *Translator;
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    
+    // High DPI scaling is automatic in Qt 6, deprecated in Qt 5.14+
+    #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    #endif
+    
     Translator = new QTranslator;
     Translator->load(":/translations/" + QCoreApplication::applicationName() + "_" + QLocale::system().name());
     app.installTranslator(Translator);
@@ -45,9 +50,9 @@ int main(int argc, char *argv[])
 
     //show main window
     mainWin = new MainWindow(NULL, &modbus_adapt, &settings);
-    //connect signals - slots
-    QObject::connect(&modbus_adapt, SIGNAL(refreshView()), mainWin, SLOT(refreshView()));
-    QObject::connect(mainWin, SIGNAL(resetCounters()), &modbus_adapt, SLOT(resetCounters()));
+    //connect signals - slots (Qt 6 compatible functional syntax)
+    QObject::connect(&modbus_adapt, &ModbusAdapter::refreshView, mainWin, &MainWindow::refreshView);
+    QObject::connect(mainWin, &MainWindow::resetCounters, &modbus_adapt, &ModbusAdapter::resetCounters);
     mainWin->show();
 
     return app.exec();

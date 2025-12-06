@@ -53,6 +53,9 @@ private:
 
     void changeEvent(QEvent* event);
 
+public slots:
+    void refreshView();  // Public slot for signal connections
+
 private slots:
     void showSettingsModbusRTU();
     void showSettingsModbusTCP();
@@ -74,7 +77,6 @@ private slots:
     void openLogFile();
     void modbusScanCycle(bool value);
     void modbusRequest();
-    void refreshView();
     void changeLanguage();
     void openModbusManual();
     void loadSession();

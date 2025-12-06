@@ -27,7 +27,7 @@ InfoBar::InfoBar(QWidget *parent) : QFrame(parent)
                                              width: 12px}");
     button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     button->setFocusPolicy(Qt::NoFocus);
-    connect(button, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(button, &QPushButton::clicked, this, &QFrame::hide);
 
     QHBoxLayout *hboxlayout = new QHBoxLayout;
     hboxlayout->addWidget(label);
