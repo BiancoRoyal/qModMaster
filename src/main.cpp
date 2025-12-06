@@ -25,6 +25,11 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     
+    // Set application metadata
+    app.setApplicationName("qModMaster");
+    app.setApplicationVersion("0.6.0");
+    app.setOrganizationName("qModMaster");
+    
     // High DPI scaling is automatic in Qt 6, deprecated in Qt 5.14+
     #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
