@@ -107,7 +107,11 @@ void _error_print(modbus_t *ctx, const char *context);
 int _modbus_receive_msg(modbus_t *ctx, uint8_t *msg, msg_type_t msg_type);
 
 #ifndef HAVE_STRLCPY
+#ifdef __APPLE__
+/* macOS has strlcpy as a macro in <string.h>, so we don't need to declare it */
+#else
 size_t strlcpy(char *dest, const char *src, size_t dest_size);
+#endif
 #endif
 
 MODBUS_END_DECLS

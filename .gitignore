@@ -26,6 +26,7 @@ ui_*.h
 *.config
 
 # Build directories
+build/
 build-*/
 debug/
 release/

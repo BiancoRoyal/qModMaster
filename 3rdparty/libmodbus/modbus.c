@@ -23,6 +23,11 @@
 #include "modbus.h"
 #include "modbus-private.h"
 
+//***Not part of libmodbus - added for QModMaster***//
+// Forward declarations for bus monitor functions
+extern void busMonitorRawRequestData(uint8_t * data, int dataLen);
+extern void busMonitorRawResponseData(uint8_t * data, int dataLen);
+
 /* Internal use */
 #define MSG_LENGTH_UNDEFINED -1
 
