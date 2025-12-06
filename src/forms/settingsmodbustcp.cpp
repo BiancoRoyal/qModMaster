@@ -10,7 +10,7 @@ SettingsModbusTCP::SettingsModbusTCP(QWidget *parent, ModbusCommSettings * setti
 {
     ui->setupUi(this);
 
-    connect(ui->buttonBox,SIGNAL(accepted()),this,SLOT(changesAccepted()));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &SettingsModbusTCP::changesAccepted);
 }
 
 SettingsModbusTCP::~SettingsModbusTCP()

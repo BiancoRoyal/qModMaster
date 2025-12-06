@@ -34,41 +34,41 @@ MainWindow::MainWindow(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettin
 
     //UI - dialogs
     m_dlgAbout = new About();
-    connect(ui->actionAbout,SIGNAL(triggered()),m_dlgAbout,SLOT(show()));
+    connect(ui->actionAbout, &QAction::triggered, m_dlgAbout, &QDialog::show);
     m_dlgModbusRTU = new SettingsModbusRTU(this,m_modbusCommSettings);
-    connect(ui->actionSerial_RTU,SIGNAL(triggered()),this,SLOT(showSettingsModbusRTU()));
+    connect(ui->actionSerial_RTU, &QAction::triggered, this, &MainWindow::showSettingsModbusRTU);
     m_dlgModbusTCP = new SettingsModbusTCP(this,m_modbusCommSettings);
-    connect(ui->actionTCP,SIGNAL(triggered()),this,SLOT(showSettingsModbusTCP()));
+    connect(ui->actionTCP, &QAction::triggered, this, &MainWindow::showSettingsModbusTCP);
     m_dlgSettings = new Settings(this,m_modbusCommSettings);
-    connect(ui->actionSettings,SIGNAL(triggered()),this,SLOT(showSettings()));
+    connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::showSettings);
     m_busMonitor = new BusMonitor(this, m_modbus->rawModel);
-    connect(ui->actionBus_Monitor,SIGNAL(triggered()),this,SLOT(showBusMonitor()));
+    connect(ui->actionBus_Monitor, &QAction::triggered, this, &MainWindow::showBusMonitor);
     m_tools = new Tools(this, m_modbus, m_modbusCommSettings);
-    connect(ui->actionTools,SIGNAL(triggered()),this,SLOT(showTools()));
+    connect(ui->actionTools, &QAction::triggered, this, &MainWindow::showTools);
 
-    //UI - connections
-    connect(ui->cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
-    connect(ui->cmbFunctionCode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedFunctionCode(int)));
-    connect(ui->cmbBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedBase(int)));
-    connect(ui->chkSigned,SIGNAL(toggled(bool)),this,SLOT(changedDecSign(bool)));
-    connect(ui->cmbStartAddrBase,SIGNAL(currentIndexChanged(int)),this,SLOT(changedStartAddrBase(int)));
-    connect(ui->sbSlaveID,SIGNAL(valueChanged(int)),this,SLOT(changedSlaveID(int)));
-    connect(ui->sbNoOfRegs,SIGNAL(valueChanged(int)),this,SLOT(changedNoOfRegs(int)));
-    connect(ui->sbStartAddress,SIGNAL(valueChanged(int)),this,SLOT(changedStartAddress(int)));
-    connect(ui->spInterval,SIGNAL(valueChanged(int)),this,SLOT(changedScanRate(int)));
-    connect(ui->actionClear,SIGNAL(triggered()),this,SLOT(clearItems()));
-    connect(ui->actionRead_Write,SIGNAL(triggered()),this,SLOT(modbusRequest()));
-    connect(ui->actionScan,SIGNAL(toggled(bool)),this,SLOT(modbusScanCycle(bool)));
-    connect(ui->actionConnect,SIGNAL(toggled(bool)),this,SLOT(changedConnect(bool)));
-    connect(ui->actionReset_Counters,SIGNAL(triggered()),this,SIGNAL(resetCounters()));
-    connect(ui->actionOpenLogFile,SIGNAL(triggered()),this,SLOT(openLogFile()));
-    connect(ui->actionHeaders,SIGNAL(triggered(bool)),this,SLOT(showHeaders(bool)));
-    connect(ui->actionModbus_Manual,SIGNAL(triggered()),this,SLOT(openModbusManual()));
-    connect(ui->actionEnglish_en_US,SIGNAL(triggered()),this,SLOT(changeLanguage()));
-    connect(ui->actionSimplified_Chinese_zh_CN,SIGNAL(triggered()),this,SLOT(changeLanguage()));
-    connect(ui->actionTraditional_Chinese_zh_TW,SIGNAL(triggered()),this,SLOT(changeLanguage()));
-    connect(ui->actionLoad_Session,SIGNAL(triggered(bool)),this,SLOT(loadSession()));
-    connect(ui->actionSave_Session,SIGNAL(triggered(bool)),this,SLOT(saveSession()));
+    //UI - connections (Qt 6 compatible functional syntax)
+    connect(ui->cmbModbusMode, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::changedModbusMode);
+    connect(ui->cmbFunctionCode, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::changedFunctionCode);
+    connect(ui->cmbBase, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::changedBase);
+    connect(ui->chkSigned, &QCheckBox::toggled, this, &MainWindow::changedDecSign);
+    connect(ui->cmbStartAddrBase, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::changedStartAddrBase);
+    connect(ui->sbSlaveID, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::changedSlaveID);
+    connect(ui->sbNoOfRegs, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::changedNoOfRegs);
+    connect(ui->sbStartAddress, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::changedStartAddress);
+    connect(ui->spInterval, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::changedScanRate);
+    connect(ui->actionClear, &QAction::triggered, this, &MainWindow::clearItems);
+    connect(ui->actionRead_Write, &QAction::triggered, this, &MainWindow::modbusRequest);
+    connect(ui->actionScan, &QAction::toggled, this, &MainWindow::modbusScanCycle);
+    connect(ui->actionConnect, &QAction::toggled, this, &MainWindow::changedConnect);
+    connect(ui->actionReset_Counters, &QAction::triggered, this, &MainWindow::resetCounters);
+    connect(ui->actionOpenLogFile, &QAction::triggered, this, &MainWindow::openLogFile);
+    connect(ui->actionHeaders, &QAction::toggled, this, &MainWindow::showHeaders);
+    connect(ui->actionModbus_Manual, &QAction::triggered, this, &MainWindow::openModbusManual);
+    connect(ui->actionEnglish_en_US, &QAction::triggered, this, &MainWindow::changeLanguage);
+    connect(ui->actionSimplified_Chinese_zh_CN, &QAction::triggered, this, &MainWindow::changeLanguage);
+    connect(ui->actionTraditional_Chinese_zh_TW, &QAction::triggered, this, &MainWindow::changeLanguage);
+    connect(ui->actionLoad_Session, &QAction::triggered, this, &MainWindow::loadSession);
+    connect(ui->actionSave_Session, &QAction::triggered, this, &MainWindow::saveSession);
 
     //UI - status
     m_statusInd = new QLabel;

@@ -4,8 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# Qt 6 Configuration
+QT_VERSION_MIN = 6.0.0
+QT += core gui network widgets serialport
+
+# For Qt 5 compatibility (fallback)
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets serialport
 
 TARGET = qModMaster
 TEMPLATE = app
@@ -16,6 +20,13 @@ MOC_DIR = build/moc
 RCC_DIR = build/rcc
 UI_DIR = build/ui
 OBJECTS_DIR = build/obj
+
+# C++17 for Qt 6 (C++11 for Qt 5 compatibility)
+greaterThan(QT_MAJOR_VERSION, 5) {
+    QMAKE_CXXFLAGS += -std=c++17
+} else {
+    QMAKE_CXXFLAGS += -std=gnu++11
+}
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
@@ -81,7 +92,7 @@ win32:DEFINES += _TTY_WIN_  WINVER=0x0501
 
 win32:LIBS += -lsetupapi -lwsock32 -lws2_32
 
-QMAKE_CXXFLAGS += -std=gnu++11
+# C++ standard is set conditionally above based on Qt version
 
 DEFINES += QS_LOG_LINE_NUMBERS     # automatically writes the file and line for each log message
 #DEFINES += QS_LOG_DISABLE         # logging code is replaced with a no-op

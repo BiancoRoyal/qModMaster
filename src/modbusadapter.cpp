@@ -22,8 +22,8 @@ ModbusAdapter::ModbusAdapter(QObject *parent) :
     m_transactionIsPending = false;
     m_packets = 0;
     m_errors = 0;
-    connect(m_pollTimer,SIGNAL(timeout()),this,SLOT(modbusTransaction()));
-    connect(regModel,SIGNAL(refreshView()),this,SIGNAL(refreshView()));
+    connect(m_pollTimer, &QTimer::timeout, this, &ModbusAdapter::modbusTransaction);
+    connect(regModel, &RegistersModel::refreshView, this, &ModbusAdapter::refreshView);
     //setup memory for data
     dest = (uint8_t *) malloc(2000 * sizeof(uint8_t));
     memset(dest, 0, 2000 * sizeof(uint8_t));
@@ -383,7 +383,12 @@ void ModbusAdapter::busMonitorRequestData(uint8_t * data, int dataLen)
     QString line;
 
     for(int i = 0; i < dataLen; ++i ) {
-        line += QString().sprintf( "%.2x  ", data[i] );
+        // Qt 6 compatible: QString::asprintf() or QString::arg()
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        line += QString::asprintf("%.2x  ", data[i]);
+        #else
+        line += QString().sprintf("%.2x  ", data[i]);
+        #endif
     }
 
     QLOG_INFO() << "Tx Data : " << line;
@@ -402,7 +407,12 @@ void ModbusAdapter::busMonitorResponseData(uint8_t * data, int dataLen)
     QString line;
 
     for(int i = 0; i < dataLen; ++i ) {
-        line += QString().sprintf( "%.2x  ", data[i] );
+        // Qt 6 compatible: QString::asprintf() or QString::arg()
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        line += QString::asprintf("%.2x  ", data[i]);
+        #else
+        line += QString().sprintf("%.2x  ", data[i]);
+        #endif
     }
 
     QLOG_INFO() << "Rx Data : " << line;

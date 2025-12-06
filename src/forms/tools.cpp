@@ -23,13 +23,13 @@ Tools::Tools(QWidget *parent, ModbusAdapter *adapter, ModbusCommSettings *settin
     ui->toolBar->addAction(ui->actionClear);
     ui->toolBar->addAction(ui->actionExit);
 
-    //UI - connections
-    connect(cmbModbusMode,SIGNAL(currentIndexChanged(int)),this,SLOT(changedModbusMode(int)));
-    connect(ui->actionExec,SIGNAL(triggered(bool)),this,SLOT(execCmd()));
-    connect(ui->actionClear,SIGNAL(triggered(bool)),this,SLOT(clear()));
-    connect(ui->actionExit,SIGNAL(triggered()),this,SLOT(exit()));
-    connect(&m_pingProc,SIGNAL(readyReadStandardOutput()),this,SLOT(pingData()));
-    connect(&m_pingProc,SIGNAL(readyReadStandardError()),this,SLOT(pingData()));
+    //UI - connections (Qt 6 compatible functional syntax)
+    connect(cmbModbusMode, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &Tools::changedModbusMode);
+    connect(ui->actionExec, &QAction::triggered, this, &Tools::execCmd);
+    connect(ui->actionClear, &QAction::triggered, this, &Tools::clear);
+    connect(ui->actionExit, &QAction::triggered, this, &Tools::exit);
+    connect(&m_pingProc, &QProcess::readyReadStandardOutput, this, &Tools::pingData);
+    connect(&m_pingProc, &QProcess::readyReadStandardError, this, &Tools::pingData);
 
 }
 
