@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include <QtGlobal>
 
-const QString VER = "qModMaster 0.5.2-3";
+const QString VER = "qModMaster 0.6.0";
 const QString LIB_VER = LIBMODBUS_VERSION_STRING;
 
 About::About(QWidget *parent) :
