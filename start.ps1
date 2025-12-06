@@ -18,8 +18,14 @@ $QtPaths = @(
 
 foreach ($QtBase in $QtPaths) {
     if (Test-Path $QtBase) {
-        # Try to find the latest Qt version
-        $QtVersions = Get-ChildItem -Path $QtBase -Directory | Where-Object { $_.Name -match '^\d+\.\d+' } | Sort-Object Name -Descending
+        # Try to find Qt versions (prefer Qt 6.x, then Qt 5.x)
+        $QtVersions = Get-ChildItem -Path $QtBase -Directory | Where-Object { $_.Name -match '^\d+\.\d+' } | Sort-Object { 
+            # Sort: Qt 6.x first, then Qt 5.x, then others
+            $major = [int]($_.Name -split '\.')[0]
+            if ($major -eq 6) { "0" + $_.Name } 
+            elseif ($major -eq 5) { "1" + $_.Name }
+            else { "2" + $_.Name }
+        }
         
         foreach ($QtVersion in $QtVersions) {
             $QtPathsToCheck = @(
@@ -35,7 +41,12 @@ foreach ($QtBase in $QtPaths) {
                     $env:PATH = "$QtPath\bin;$env:PATH"
                     $env:QT_PLUGIN_PATH = "$QtPath\plugins"
                     $QtFound = $true
-                    Write-Host "Found Qt at: $QtPath" -ForegroundColor Yellow
+                    $majorVersion = [int]($QtVersion.Name -split '\.')[0]
+                    if ($majorVersion -ge 6) {
+                        Write-Host "Found Qt $($QtVersion.Name) at: $QtPath" -ForegroundColor Cyan
+                    } else {
+                        Write-Host "Found Qt $($QtVersion.Name) at: $QtPath" -ForegroundColor Yellow
+                    }
                     break
                 }
             }
