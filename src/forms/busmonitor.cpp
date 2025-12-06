@@ -3,6 +3,11 @@
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QShowEvent>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QRegularExpression>
+#else
+#include <QRegExp>
+#endif
 #include "busmonitor.h"
 #include "ui_busmonitor.h"
 #include "./src/rawdatadelegate.h"
@@ -119,7 +124,12 @@ void BusMonitor::selectedRow(const QModelIndex & selected)
 void BusMonitor::parseTxMsg(QString msg)
 {
     ui->txtPDU->setPlainText("Type : Tx Message");
+    // Qt 6 compatible: QRegExp replaced with QRegularExpression
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QStringList row = msg.split(QRegularExpression("\\s+"));
+    #else
     QStringList row = msg.split(QRegExp("\\s+"));
+    #endif
         ui->txtPDU->appendPlainText("Timestamp : " + row[2]);
         if (msg.indexOf("RTU") > -1){//RTU message
             QStringList pdu;
@@ -189,7 +199,12 @@ void BusMonitor::parseTxPDU(QStringList pdu, QString slave)
 void BusMonitor::parseRxMsg(QString msg)
 {
     ui->txtPDU->setPlainText("Type : Rx Message");
+    // Qt 6 compatible: QRegExp replaced with QRegularExpression
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QStringList row = msg.split(QRegularExpression("\\s+"));
+    #else
     QStringList row = msg.split(QRegExp("\\s+"));
+    #endif
     ui->txtPDU->appendPlainText("Timestamp : " + row[2]);
     if (msg.indexOf("RTU") > -1){//RTU message
         QStringList pdu;
@@ -274,7 +289,12 @@ void BusMonitor::parseRxPDU(QStringList pdu, QString slave)
 void BusMonitor::parseSysMsg(QString msg)
 {
     ui->txtPDU->setPlainText("Type : System Message");
+    // Qt 6 compatible: QRegExp replaced with QRegularExpression
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QStringList row = msg.split(QRegularExpression("\\s+"));
+    #else
     QStringList row = msg.split(QRegExp("\\s+"));
+    #endif
     ui->txtPDU->appendPlainText("Timestamp : " + row[2]);
     ui->txtPDU->appendPlainText("Message" + msg.mid(msg.indexOf(" : ")));
 }

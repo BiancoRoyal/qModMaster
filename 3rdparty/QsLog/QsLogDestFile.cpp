@@ -24,7 +24,9 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "QsLogDestFile.h"
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 #include <QDateTime>
 #include <QtGlobal>
 #include <iostream>
@@ -126,7 +128,10 @@ QsLogging::FileDestination::FileDestination(const QString& filePath, RotationStr
     if (!mFile.open(QFile::WriteOnly | QFile::Text | mRotationStrategy->recommendedOpenModeFlag()))
         std::cerr << "QsLog: could not open log file " << qPrintable(filePath);
     mOutputStream.setDevice(&mFile);
+    // Qt 6: QTextStream uses UTF-8 by default, no need to set codec
+    #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     mOutputStream.setCodec(QTextCodec::codecForName("UTF-8"));
+    #endif
 
     mRotationStrategy->setInitialInfo(mFile);
 }
@@ -142,9 +147,12 @@ void QsLogging::FileDestination::write(const QString& message, Level)
             std::cerr << "QsLog: could not reopen log file " << qPrintable(mFile.fileName());
         mRotationStrategy->setInitialInfo(mFile);
         mOutputStream.setDevice(&mFile);
+        #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        mOutputStream.setCodec(QTextCodec::codecForName("UTF-8"));
+        #endif
     }
 
-    mOutputStream << message << endl;
+    mOutputStream << message << Qt::endl;
     mOutputStream.flush();
 }
 
