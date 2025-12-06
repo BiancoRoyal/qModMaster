@@ -160,6 +160,6 @@ Bei Problemen oder Fragen:
 
 ---
 
-**Version**: 0.5.2-3  
+**Version**: 0.6.0  
 **Letzte Aktualisierung**: 2024
 
