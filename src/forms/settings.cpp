@@ -9,7 +9,7 @@ Settings::Settings(QWidget *parent ,ModbusCommSettings *settings) :
 {
     ui->setupUi(this);
 
-    connect(ui->buttonBox,SIGNAL(accepted()),this,SLOT(changesAccepted()));
+    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &Settings::changesAccepted);
 
 }
 
